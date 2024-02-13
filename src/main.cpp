@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "imail.h"
+#include "help.h"
 
 int main() {
     std::cout << "Hello World" << std::endl;
