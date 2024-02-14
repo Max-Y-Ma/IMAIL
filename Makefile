@@ -6,7 +6,7 @@ BUILD    := bin
 OBJ_DIR  := $(BUILD)/obj
 INCLUDE  := 
 SRC      := $(wildcard src/*.cpp)
-OBJECTS  := $(patsubst src/%.cpp, $(BUILD)/%.o, $(SRC))
+OBJECTS  := $(patsubst src/%.cpp,$(BUILD)/%.o, $(SRC))
 
 # Imail Library
 IMAIL_LIB 		:= imail
@@ -14,7 +14,7 @@ IMAIL_INCLUDE 	:= imail
 IMAIL_CXXFLAGS 	:= -I $(IMAIL_INCLUDE)
 IMAIL_LDFLAGS	:= -L $(IMAIL_INCLUDE) -L $(BUILD) -l $(IMAIL_LIB) -lpthread
 IMAIL_SRC		:= $(wildcard imail/*.cpp)
-IMAIL_OBJECTS	:= $(patsubst imail/%.cpp, $(BUILD)/%.o, $(IMAIL_SRC))
+IMAIL_OBJECTS	:= $(patsubst imail/%.cpp,$(BUILD)/%.o, $(IMAIL_SRC))
 
 TARGET   := main
 all: $(BUILD) $(TARGET)
@@ -48,7 +48,7 @@ GTEST_INCLUDE 		:= /usr/local/include
 GTEST_CXXFLAGS 		:= -I $(GTEST_INCLUDE)
 GTEST_LDFLAGS		:= -L /usr/local/lib -l $(GTEST_LIB) -l pthread
 GTEST_SRC			:= $(wildcard test/*.cpp)
-GTEST_OBJECTS		:= $(patsubst test/%.cpp, $(BUILD)/%.o, $(GTEST_SRC))
+GTEST_OBJECTS		:= $(patsubst test/%.cpp,$(BUILD)/%.o, $(GTEST_SRC))
 
 .PHONY: test
 test: $(BUILD) $(GTEST_TARGET)
@@ -69,13 +69,19 @@ run_test:
 clean:
 	@rm -rf $(BUILD)
 
+# Define color codes
+RED = \033[0;31m
+GREEN = \033[0;32m
+YELLOW = \033[0;33m
+RESET = \033[0m
+
 .PHONY: info
 info:
-	@echo "[*] Compiler:		${CXX}     	   "
-	@echo "[*] Compiler Flags: 	${CXXFLAGS}    "
-	@echo "[*] Linker Flags: 	${LDFLAGS}     "
-	@echo "[*] TARGET: 			${TARGET}      "
-	@echo "[*] Object Dir:      ${OBJ_DIR}     "
-	@echo "[*] Include Dir:     ${INCLUDE}     "
-	@echo "[*] Sources:         ${SRC}         "
-	@echo "[*] Objects:         ${OBJECTS}     "
+	@echo "$(GREEN)[*] Compiler:$(RESET) ${CXX}"
+	@echo "$(GREEN)[*] Compiler Flags:$(RESET) ${CXXFLAGS}"
+	@echo "$(GREEN)[*] Linker Flags:$(RESET) ${LDFLAGS}"
+	@echo "$(GREEN)[*] TARGET:$(RESET) ${TARGET}"
+	@echo "$(GREEN)[*] Object Dir:$(RESET) ${OBJ_DIR}"
+	@echo "$(GREEN)[*] Include Dir:$(RESET) ${INCLUDE}"
+	@echo "$(GREEN)[*] Sources:$(RESET) ${SRC}"
+	@echo "$(GREEN)[*] Objects:$(RESET) ${OBJECTS}"
