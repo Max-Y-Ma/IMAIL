@@ -28,6 +28,11 @@ private:
 
 public:
     /**
+     * @brief Initializes the thread pool.
+    */
+    ThreadPool(int queue_size, int num_threads);
+
+    /**
      * @brief Insert a task into the queue
      * 
      * @return returns 0 if successful or 1 otherwise,
@@ -38,11 +43,6 @@ public:
      * @brief Remove a task from the queue
     */
     task_t dequeue(void);
-
-    /**
-     * @brief Initializes the thread pool.
-    */
-    ThreadPool(int queue_size, int num_threads);
 
     /**
      * @brief Submit a pointer to a function with a parameter

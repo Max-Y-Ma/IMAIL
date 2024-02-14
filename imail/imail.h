@@ -11,13 +11,6 @@ public:
     Imail();
 
     /**
-     * @brief Initialize Imail library
-     * 
-     * @return 0 if successful, -1 if failed
-    */
-    int init(void);
-
-    /**
      * @brief Shutdown Imail library 
      * 
      * @return 0 if successful, -1 if failed

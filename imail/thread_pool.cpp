@@ -4,60 +4,6 @@
 static bool shutdown_flag = false;
 
 /**
- * @brief Insert a task into the queue
- * 
- * @return returns 0 if successful or 1 otherwise,
-*/
-int ThreadPool::enqueue(task_t task) 
-{
-    /* Acquire Lock */
-    pthread_mutex_lock(&this->mtx_queue_);
-
-    /* Check Queue Full */
-    if (this->work_queue_.size() == this->queue_size_) {
-        pthread_mutex_unlock(&this->mtx_queue_);
-        return -1;
-    }
-
-    /* Enqueue */
-    this->work_queue_.push_back(task);
-    sem_post(&this->sem_queue_);
-
-    /* Release Lock */
-    pthread_mutex_unlock(&this->mtx_queue_);
-
-    return 0;
-}
-
-/**
- * @brief Remove a task from the queue
-*/
-task_t ThreadPool::dequeue(void) 
-{
-    /* Block on Queue Empty */
-    sem_wait(&this->sem_queue_);
-
-    /* Shutdown Condition */
-    if (shutdown_flag) {
-        task_t task;
-        task.func_ = NULL;
-        return task;
-    }
-
-    /* Acquire Lock */
-    pthread_mutex_lock(&this->mtx_queue_);
-
-    /* Dequeue */
-    task_t ret = this->work_queue_.front();
-    this->work_queue_.pop_front();
-
-    /* Release Lock */
-    pthread_mutex_unlock(&this->mtx_queue_);
-
-    return ret;
-}
-
-/**
  * @brief Execute a task
 */
 void execute(job_function func, void* data)
@@ -101,6 +47,60 @@ ThreadPool::ThreadPool(int queue_size, int num_threads)
     for (int i = 0; i < this->num_threads_; i++) {
         pthread_create(&this->thread_pool_[i], NULL, worker_thread, this);
     }
+}
+
+/**
+ * @brief Insert a task into the queue
+ * 
+ * @return returns 0 if successful or 1 otherwise,
+*/
+int ThreadPool::enqueue(task_t task) 
+{
+    /* Acquire Lock */
+    pthread_mutex_lock(&this->mtx_queue_);
+
+    /* Check Queue Full */
+    if (this->work_queue_.size() == (unsigned long)this->queue_size_) {
+        pthread_mutex_unlock(&this->mtx_queue_);
+        return -1;
+    }
+
+    /* Enqueue */
+    this->work_queue_.push_back(task);
+    sem_post(&this->sem_queue_);
+
+    /* Release Lock */
+    pthread_mutex_unlock(&this->mtx_queue_);
+
+    return 0;
+}
+
+/**
+ * @brief Remove a task from the queue
+*/
+task_t ThreadPool::dequeue(void) 
+{
+    /* Block on Queue Empty */
+    sem_wait(&this->sem_queue_);
+
+    /* Shutdown Condition */
+    if (shutdown_flag) {
+        task_t task;
+        task.func_ = NULL;
+        return task;
+    }
+
+    /* Acquire Lock */
+    pthread_mutex_lock(&this->mtx_queue_);
+
+    /* Dequeue */
+    task_t ret = this->work_queue_.front();
+    this->work_queue_.pop_front();
+
+    /* Release Lock */
+    pthread_mutex_unlock(&this->mtx_queue_);
+
+    return ret;
 }
 
 /**

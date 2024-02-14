@@ -5,17 +5,7 @@
 */
 Imail::Imail()
 {
-
-}
-
-/**
- * @brief Initialize Imail library
- * 
- * @return 0 if successful, -1 if failed
-*/
-int Imail::init(void)
-{
-
+    
 }
 
 /**
@@ -25,7 +15,7 @@ int Imail::init(void)
 */
 int Imail::shutdown(void)
 {
-    
+    return 0;
 }
 
 /**
@@ -38,7 +28,7 @@ int Imail::shutdown(void)
 */
 int Imail::query(void)
 {
-    
+    return 0;
 }
 
 /**
@@ -50,7 +40,7 @@ int Imail::query(void)
 */
 int Imail::send(void)
 {
-    
+    return 0;
 }
 
 /**
@@ -62,7 +52,7 @@ int Imail::send(void)
 */
 int Imail::recv(void)
 {
-    
+    return 0;
 }
 
 /**
@@ -72,5 +62,5 @@ int Imail::recv(void)
 */
 int Imail::poll(void)
 {
-    
+    return 0;
 }

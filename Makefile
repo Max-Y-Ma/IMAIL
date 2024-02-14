@@ -1,6 +1,6 @@
 # Main Program
 CXX      := g++
-CXXFLAGS := -Wall -g
+CXXFLAGS := -Wall -Werror -g
 LDFLAGS  := 
 BUILD    := bin
 OBJ_DIR  := $(BUILD)/obj
@@ -17,15 +17,17 @@ IMAIL_SRC		:= $(wildcard imail/*.cpp)
 IMAIL_OBJECTS	:= $(patsubst imail/%.cpp, $(BUILD)/%.o, $(IMAIL_SRC))
 
 TARGET   := main
-all: $(TARGET)
+all: $(BUILD) $(TARGET)
+
+# Rule to create the build directory
+$(BUILD):
+	mkdir -p $(BUILD)
 
 # Main Targets
 $(TARGET): $(OBJECTS) $(IMAIL_LIB) 
-	mkdir -p $(BUILD)
 	$(CXX) $(CXXFLAGS) $(IMAIL_CXXFLAGS) $< $(IMAIL_LDFLAGS) -o $(BUILD)/$@
 
 $(BUILD)/%.o: src/%.cpp
-	mkdir -p $(BUILD)
 	$(CXX) -c $(CXXFLAGS) $(IMAIL_CXXFLAGS) $(IMAIL_LDFLAGS) $< -o $@
 
 .PHONY: run
@@ -34,29 +36,27 @@ run:
 
 # Imail Targets
 $(IMAIL_LIB): $(IMAIL_OBJECTS)
-	mkdir -p $(BUILD)
 	ar rcs $(BUILD)/lib$@.a $^
 
 $(BUILD)/%.o: imail/%.cpp
-	mkdir -p $(BUILD)
 	$(CXX) -c $(CXXFLAGS) $(IMAIL_CXXFLAGS) $(IMAIL_LDFLAGS) $< -o $@
 
 # Google Test
-GTEST_TARGET		:= test
-GTEST_LIB 		:= gtest
-GTEST_INCLUDE 	:= /usr/local/include
-GTEST_CXXFLAGS 	:= -I $(GTEST_INCLUDE)
+GTEST_TARGET		:= unittest
+GTEST_LIB 			:= gtest
+GTEST_INCLUDE 		:= /usr/local/include
+GTEST_CXXFLAGS 		:= -I $(GTEST_INCLUDE)
 GTEST_LDFLAGS		:= -L /usr/local/lib -l $(GTEST_LIB) -l pthread
 GTEST_SRC			:= $(wildcard test/*.cpp)
 GTEST_OBJECTS		:= $(patsubst test/%.cpp, $(BUILD)/%.o, $(GTEST_SRC))
 
 .PHONY: test
+test: $(BUILD) $(GTEST_TARGET)
+
 $(GTEST_TARGET): $(GTEST_OBJECTS) $(IMAIL_LIB) 
-	mkdir -p $(BUILD)
 	$(CXX) $(CXXFLAGS) $(IMAIL_CXXFLAGS) $(GTEST_OBJECTS) $(IMAIL_LDFLAGS) $(GTEST_LDFLAGS) -o $(BUILD)/$@
 
 $(BUILD)/%.o: test/%.cpp
-	mkdir -p $(BUILD)
 	$(CXX) -c $(CXXFLAGS) $(IMAIL_CXXFLAGS) $(GTEST_CXXFLAGS) $(IMAIL_LDFLAGS) $(GTEST_LDFLAGS) $< -o $@
 
 	$(CXX) -c $(CXXFLAGS) $(IMAIL_CXXFLAGS) $(IMAIL_LDFLAGS) $< -o $@
