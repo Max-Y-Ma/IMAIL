@@ -1,6 +1,6 @@
 # Main Program
 CXX      := g++
-CXXFLAGS := -Wall -Wextra -Werror
+CXXFLAGS := -Wall -g
 LDFLAGS  := 
 BUILD    := bin
 OBJ_DIR  := $(BUILD)/obj
@@ -12,7 +12,7 @@ OBJECTS  := $(patsubst src/%.cpp, $(BUILD)/%.o, $(SRC))
 IMAIL_LIB 		:= imail
 IMAIL_INCLUDE 	:= imail
 IMAIL_CXXFLAGS 	:= -I $(IMAIL_INCLUDE)
-IMAIL_LDFLAGS	:= -L $(IMAIL_INCLUDE) -L $(BUILD) -l $(IMAIL_LIB)
+IMAIL_LDFLAGS	:= -L $(IMAIL_INCLUDE) -L $(BUILD) -l $(IMAIL_LIB) -lpthread
 IMAIL_SRC		:= $(wildcard imail/*.cpp)
 IMAIL_OBJECTS	:= $(patsubst imail/%.cpp, $(BUILD)/%.o, $(IMAIL_SRC))
 
