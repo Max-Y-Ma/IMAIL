@@ -1,15 +1,9 @@
 #include <gtest/gtest.h>
 
-const char *actualValTrue  = "hello gtest";
-const char *actualValFalse = "hello world";
-const char *expectVal      = "hello gtest";
+#include "thread_test.h"
 
-TEST(StrCompare, CStrEqual) {
-    EXPECT_STREQ(expectVal, actualValTrue);
-}
-
-TEST(StrCompare, CStrNotEqual) {
-    EXPECT_STREQ(expectVal, actualValFalse);
+TEST(ThreadPool, ThreadPool) {
+    thread_pool_test();
 }
 
 int main(int argc, char **argv) {

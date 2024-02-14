@@ -42,26 +42,28 @@ $(BUILD)/%.o: imail/%.cpp
 	$(CXX) -c $(CXXFLAGS) $(IMAIL_CXXFLAGS) $(IMAIL_LDFLAGS) $< -o $@
 
 # Google Test
-GOOGLE_TEST_TARGET		:= test
-GOOGLE_TEST_LIB 		:= gtest
-GOOGLE_TEST_INCLUDE 	:= /usr/local/include
-GOOGLE_TEST_CXXFLAGS 	:= -I $(GOOGLE_TEST_INCLUDE)
-GOOGLE_TEST_LDFLAGS		:= -L /usr/local/lib -l $(GOOGLE_TEST_LIB) -l pthread
-GOOGLE_TEST_SRC			:= $(wildcard test/*.cpp)
-GOOGLE_TEST_OBJECTS		:= $(patsubst test/%.cpp, $(BUILD)/%.o, $(GOOGLE_TEST_SRC))
+GTEST_TARGET		:= test
+GTEST_LIB 		:= gtest
+GTEST_INCLUDE 	:= /usr/local/include
+GTEST_CXXFLAGS 	:= -I $(GTEST_INCLUDE)
+GTEST_LDFLAGS		:= -L /usr/local/lib -l $(GTEST_LIB) -l pthread
+GTEST_SRC			:= $(wildcard test/*.cpp)
+GTEST_OBJECTS		:= $(patsubst test/%.cpp, $(BUILD)/%.o, $(GTEST_SRC))
 
 .PHONY: test
-$(GOOGLE_TEST_TARGET): $(GOOGLE_TEST_OBJECTS)
+$(GTEST_TARGET): $(GTEST_OBJECTS) $(IMAIL_LIB) 
 	mkdir -p $(BUILD)
-	$(CXX) $(CXXFLAGS) $^ $(GOOGLE_TEST_LDFLAGS) -o $(BUILD)/$@
+	$(CXX) $(CXXFLAGS) $(IMAIL_CXXFLAGS) $(GTEST_OBJECTS) $(IMAIL_LDFLAGS) $(GTEST_LDFLAGS) -o $(BUILD)/$@
 
 $(BUILD)/%.o: test/%.cpp
 	mkdir -p $(BUILD)
-	$(CXX) -c $(CXXFLAGS) $(GOOGLE_TEST_CXXFLAGS) $(GOOGLE_TEST_LDFLAGS) $< -o $@
+	$(CXX) -c $(CXXFLAGS) $(IMAIL_CXXFLAGS) $(GTEST_CXXFLAGS) $(IMAIL_LDFLAGS) $(GTEST_LDFLAGS) $< -o $@
+
+	$(CXX) -c $(CXXFLAGS) $(IMAIL_CXXFLAGS) $(IMAIL_LDFLAGS) $< -o $@
 
 .PHONY: run_test
 run_test:
-	@./bin/$(GOOGLE_TEST_TARGET)
+	@./bin/$(GTEST_TARGET)
 
 .PHONY: clean
 clean:
