@@ -3,6 +3,11 @@
 #include "imail.h"
 
 int main() {
-    std::cout << "Hello World" << std::endl;
+    /* Create Object */
+    Imail imail;
+
+    /* Test Query Commands */
+    imail.query(1);
+
     return 0;
 }

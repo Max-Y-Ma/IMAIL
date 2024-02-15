@@ -50,8 +50,8 @@ void *server_thread(void *arg) {
     /* Assign IP, PORT */
     bzero(&server_addr, sizeof(server_addr)); 
     server_addr.sin_family = AF_INET; 
-    server_addr.sin_addr.s_addr = htonl(INADDR_ANY); 
     server_addr.sin_port = htons(SERVER_PORT); 
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY); 
    
     /* Binding newly created socket to given IP and verification */
     if ((bind(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr))) != 0) { 
@@ -102,6 +102,56 @@ int server_init(void)
 {
     /* Start server thread */
     pthread_create(&server_thread_id, NULL, server_thread, NULL);
+    
+    return 0;
+}
+
+/**
+ * @brief Send formatted message to the server
+ * 
+ * @param send_message The message to send to server
+ * @param resp_message The response message from server
+ * @param length The length of the message
+ * 
+ * @return 0 if successful, -1 if failed
+*/
+int server_send(char* send_message, char* resp_message)
+{
+    int socket_desc;
+    struct sockaddr_in server_addr;
+    
+    /* Create socket */
+    socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+    if (socket_desc < 0){
+        printf("Unable to create socket\n");
+        return -1;
+    }
+    
+    /* Set port and IP the same as server-side */
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(SERVER_PORT);
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY); 
+    
+    /* Send connection request to server */
+    if (connect(socket_desc, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0){
+        printf("Unable to connect\n");
+        return -1;
+    }
+    
+    /* Send the message to server */
+    if (send(socket_desc, send_message, strlen(send_message) + 1, 0) < 0){
+        printf("Unable to send message\n");
+        return -1;
+    }
+    
+    /* Receive the server's response */
+    if (recv(socket_desc, resp_message, MAX_MESSAGE_SIZE, 0) < 0){
+        printf("Error while receiving server's msg\n");
+        return -1;
+    }
+    
+    /* Close the socket */
+    close(socket_desc);
     
     return 0;
 }

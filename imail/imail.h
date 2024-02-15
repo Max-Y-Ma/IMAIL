@@ -23,9 +23,11 @@ public:
      * @details This function will block until the query is sent and
      *          the response is received.
      * 
+     * @param command The command to send to the server
+     * 
      * @return 0 if successful, -1 if failed
     */
-    int query(void);
+    int query(int command);
 
     /**
      * @brief Send a message or packet to another client
@@ -34,7 +36,7 @@ public:
      * 
      * @return 0 if successful, -1 if failed
     */
-    int send(void);
+    int send(int uid, char* message);
 
     /**
      * @brief Receive a message or packet from another client.
@@ -43,14 +45,7 @@ public:
      * 
      * @return 0 if successful, -1 if failed
     */
-    int recv(void);
-
-    /**
-     * @brief Poll the server for new messages or packets
-     * 
-     * @return 0 if successful, -1 if failed
-    */
-    int poll(void);
+    int recv(char* message_buf);
 };
 
 #endif /* _IMAIL_H_ */
