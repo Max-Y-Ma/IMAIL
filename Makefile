@@ -1,4 +1,5 @@
 # Main Program
+TARGET   := main
 CXX      := g++
 CXXFLAGS := -Wall -Werror -g
 LDFLAGS  := 
@@ -16,7 +17,6 @@ IMAIL_LDFLAGS	:= -L $(IMAIL_INCLUDE) -L $(BUILD) -l $(IMAIL_LIB) -lpthread
 IMAIL_SRC		:= $(wildcard imail/*.cpp)
 IMAIL_OBJECTS	:= $(patsubst imail/%.cpp,$(BUILD)/%.o, $(IMAIL_SRC))
 
-TARGET   := main
 all: $(BUILD) $(TARGET)
 
 # Rule to create the build directory

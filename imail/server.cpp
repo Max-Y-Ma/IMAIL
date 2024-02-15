@@ -18,8 +18,6 @@
 static ThreadPool server_pool(QUEUE_SIZE, NUM_THREAD);
 static pthread_t server_thread_id;
 
-static bool shutdown_flag = 0;
-
 /**
  * @brief Worker thread function
 */
@@ -27,6 +25,9 @@ void* request_thread(void* arg) {
     /* Process client request */
     char* client_message = (char*)arg;
     printf("Msg from client: %s\n", client_message);
+
+    /* Implement Function Handlers */
+    // TODO
 
     return NULL;
 }
@@ -46,6 +47,13 @@ void *server_thread(void *arg) {
         perror("Socket creation failed...\n"); 
         pthread_exit(0);
     } 
+
+    /* Set the SO_REUSEADDR option */
+    int enable = 1;
+    if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
+        perror("setsockopt(SO_REUSEADDR) failed");
+        pthread_exit(0);
+    }
 
     /* Assign IP, PORT */
     bzero(&server_addr, sizeof(server_addr)); 
@@ -67,7 +75,7 @@ void *server_thread(void *arg) {
 
     /* Server Loop */
     char client_message[MAX_MESSAGE_SIZE];
-    while(!shutdown_flag) {
+    while(1) {
         /* Accept the data packet from client and verification */
         len = sizeof(client_addr); 
         client_fd = accept(socket_fd, (struct sockaddr*)&client_addr, (socklen_t*)&len); 
@@ -102,6 +110,9 @@ int server_init(void)
 {
     /* Start server thread */
     pthread_create(&server_thread_id, NULL, server_thread, NULL);
+
+    /* Allow server thread to start */
+    sleep(1);
     
     return 0;
 }
@@ -164,8 +175,7 @@ int server_send(char* send_message, char* resp_message)
 int server_shutdown(void)
 {
     /* Stop server thread */
-    shutdown_flag = 1;
-    pthread_join(server_thread_id, NULL);
+    pthread_cancel(server_thread_id);
 
     /* Shutdown thread pool*/
     server_pool.shutdown();
